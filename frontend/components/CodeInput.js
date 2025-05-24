@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CodeInput = () => {
+const CodeInput = ({ initialCode, onCodeChange }) => {
   const styles = {
     textarea: {
       width: '100%',
@@ -15,7 +15,13 @@ const CodeInput = () => {
   return (
     <textarea
       style={styles.textarea}
-      placeholder="Enter your code here..."
+      value={initialCode}
+      onChange={(event) => {
+        if (onCodeChange) {
+          onCodeChange(event.target.value);
+        }
+      }}
+      aria-label="Code Input Area" // Added for accessibility
     />
   );
 };

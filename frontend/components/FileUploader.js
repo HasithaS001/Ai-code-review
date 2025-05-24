@@ -1,14 +1,32 @@
 import React, { useState } from 'react';
 
-const FileUploader = () => {
+const FileUploader = ({ onFileSelect }) => {
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setSelectedFile(file.name);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target.result;
+        if (onFileSelect) {
+          onFileSelect(content);
+        }
+      };
+      reader.onerror = (e) => {
+        console.error("FileUploader: File reading error:", e);
+        if (onFileSelect) {
+          // Pass an error object or a specific error indicator if desired
+          onFileSelect(null, new Error("File reading failed"));
+        }
+      };
+      reader.readAsText(file);
     } else {
       setSelectedFile(null);
+      if (onFileSelect) {
+        onFileSelect(null); // No file selected or selection cancelled
+      }
     }
   };
 
